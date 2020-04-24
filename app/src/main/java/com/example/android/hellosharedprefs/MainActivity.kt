@@ -15,6 +15,8 @@
  */
 package com.example.android.hellosharedprefs
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -48,6 +50,10 @@ class MainActivity : AppCompatActivity() {
 
     // Key for current color
     private val COLOR_KEY = "color"
+
+    lateinit private var mPreferences: SharedPreferences
+    private var sharedPrefFile = "com.example.android.hellosharedprefs"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -57,15 +63,19 @@ class MainActivity : AppCompatActivity() {
         mColor = ContextCompat.getColor(this,
                 R.color.default_background)
 
-        // Restore the saved instance state.
-        if (savedInstanceState != null) {
-            mCount = savedInstanceState.getInt(COUNT_KEY)
-            if (mCount != 0) {
-                mShowCountTextView.setText(String.format("%s", mCount))
-            }
-            mColor = savedInstanceState.getInt(COLOR_KEY)
-            mShowCountTextView.setBackgroundColor(mColor)
-        }
+        mPreferences = getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        mCount = mPreferences.getInt(COUNT_KEY, 0)
+        mShowCountTextView.setText(mCount.toString())
+        mColor = mPreferences.getInt(COLOR_KEY, mColor)
+        mShowCountTextView.setBackgroundColor(mColor)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val preferencesEditor = mPreferences.edit()
+        preferencesEditor.putInt(COUNT_KEY, mCount)
+        preferencesEditor.putInt(COLOR_KEY, mColor)
+        preferencesEditor.apply()
     }
 
     /**
@@ -93,19 +103,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Saves the instance state if the activity is restarted (for example,
-     * on device rotation.) Here you save the values for the count and the
-     * background color.
-     *
-     * @param outState The state data.
-     */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(COUNT_KEY, mCount)
-        outState.putInt(COLOR_KEY, mColor)
-    }
-
-    /**
      * Handles the onClick for the Reset button. Resets the global count and
      * background variables to the defaults and resets the views to those
      * default values.
@@ -115,11 +112,15 @@ class MainActivity : AppCompatActivity() {
     fun reset(view: View?) {
         // Reset count
         mCount = 0
-        mShowCountTextView!!.text = String.format("%s", mCount)
+        mShowCountTextView.text = String.format("%s", mCount)
 
         // Reset color
         mColor = ContextCompat.getColor(this,
                 R.color.default_background)
-        mShowCountTextView!!.setBackgroundColor(mColor)
+        mShowCountTextView.setBackgroundColor(mColor)
+
+        val preferencesEditor = mPreferences.edit()
+        preferencesEditor.clear()
+        preferencesEditor.apply()
     }
 }
