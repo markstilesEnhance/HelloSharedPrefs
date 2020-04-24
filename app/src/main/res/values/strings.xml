@@ -35,4 +35,10 @@ limitations under the License. -->
 
     <!-- Button label for Reset button -->
     <string name="reset_button">Reset</string>
+    <string name="settings">Settings</string>
+    <string name="countdown">Count-</string>
+    <string name="countup">Count+</string>
+    <string name="grey_button">Grey</string>
+    <string name="save_button">Save</string>
+    <string name="_0">0</string>
 </resources>

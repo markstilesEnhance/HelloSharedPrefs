@@ -16,6 +16,7 @@
 package com.example.android.hellosharedprefs
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
     private var mColor = 0
 
     // Text view to display both count and color
-    lateinit private var mShowCountTextView: TextView
+    private lateinit var mShowCountTextView: TextView
 
     // Key for current count
     private val COUNT_KEY = "count"
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     // Key for current color
     private val COLOR_KEY = "color"
 
-    lateinit private var mPreferences: SharedPreferences
+    private lateinit var mPreferences: SharedPreferences
     private var sharedPrefFile = "com.example.android.hellosharedprefs"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,13 +71,13 @@ class MainActivity : AppCompatActivity() {
         mShowCountTextView.setBackgroundColor(mColor)
     }
 
-    override fun onPause() {
+/*    override fun onPause() {
         super.onPause()
         val preferencesEditor = mPreferences.edit()
         preferencesEditor.putInt(COUNT_KEY, mCount)
         preferencesEditor.putInt(COLOR_KEY, mColor)
         preferencesEditor.apply()
-    }
+    }*/
 
     /**
      * Handles the onClick for the background color buttons. Gets background
@@ -122,5 +123,10 @@ class MainActivity : AppCompatActivity() {
         val preferencesEditor = mPreferences.edit()
         preferencesEditor.clear()
         preferencesEditor.apply()
+    }
+
+    fun settings(view: View) {
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
     }
 }
